@@ -6,7 +6,7 @@ from django.db.models import Q
 from ..pagination import PageNumberPaginationPost
 from ..models import Post
 from ..serializers import PostSerializer
-from ..utils import image_upload
+from ..utils import image_upload, chatgpt_engine, get_keywords_from_title
 
 
 @permission_classes([IsAuthenticated])
@@ -16,6 +16,8 @@ def post_create_view(request):
     if image is None:
         return Response({'error': 'image required for creating post'}, status=400)
 
+    keywords = get_keywords_from_title(request.data.get('title'))
+    print("keywords: ", keywords)
     image_id = request.data.get('title').replace(' ', '')
     # print(type(image_id))
     image_id = image_id.lower()
@@ -103,3 +105,15 @@ def all_post_view(request):
     # print(serializer.data)
     # print("ok at this line 3")
     return paginator.get_paginated_response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def suggestions(request):
+    user_prompt = request.data.get('prompt')
+    if user_prompt:
+        response = chatgpt_engine(user_prompt).replace('\n\n', '\n').split('\n')
+        
+        return Response({'data': response}, status=200)
+    
+    return Response({'error': 'prompt message required'}, status=400)

@@ -74,6 +74,7 @@ def chatgpt_engine(user_content):
             # {"role": "system", "content": system_content},
             {"role": "user", "content": user_content},
         ],
+        # prompt = user_content,
         temperature=0.7,
         max_tokens=128,
     )
@@ -81,3 +82,42 @@ def chatgpt_engine(user_content):
     response = chat_completion.choices[0].message.content
     print("AI/ML API:\n", response)
     return response
+
+
+def get_keywords_from_title(title):
+    # Define the prompt for ChatGPT
+    client = openai.OpenAI(
+        api_key=os.getenv('OPENAI_KEY'),
+        base_url="https://api.aimlapi.com",
+    )
+
+    prompt = (
+        f"Extract relevant keywords from the following blog post title not english language words:\n\n"
+        f"Title: {title}\n\n"
+        f"Keywords:"
+    )
+
+    # prompt = (
+    #             "Analyze the following blog post and suggest relevant topics and interests. "
+    #             "Also, provide a summary of the content.\n\n"
+    #             f"Blog Post:\n{title}\n\n"
+    #             "Suggested Topics and Interests:\n"
+    #             "Summary:"
+    #         )
+    try:
+        # Create the chat completion request
+        chat_completion = client.chat.completions.create(
+            model="mistralai/Mistral-7B-Instruct-v0.2",  # Replace with the appropriate model name
+            messages=[
+                {"role": "user", "content": prompt},  # User message
+            ],
+            temperature=0.5,  # Adjust as needed for creativity
+            max_tokens=50,  # Adjust to get a suitable number of keywords
+        )
+        
+        # Extract and return the keywords from the response
+        keywords = chat_completion.choices[0].message.content.strip()
+        return keywords
+    except Exception as e:
+        print("Exception: ", str(e))
+        return None
