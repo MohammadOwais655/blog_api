@@ -1,19 +1,22 @@
 <!-- templates/admin/otp_verification.html -->
 {% extends "admin/base_site.html" %}
 {% block content %}
+<center>
 <div id="content" class="colM">
     <h1>OTP Verification</h1>
     <form method="post" action="{% url 'admin:otp_verification' %}">{% csrf_token %}
         <div class="form-row">
             <label for="id_otp">One-Time Password:</label>
-            {{ form.otp }}
+            <input type="text" name="otp" >
+             <!-- {{ form.otp }} -->
         </div>
         <div class="submit-row">
             <input type="submit" value="Verify OTP">
         </div>
-        {% if form.errors %}
-        <p style="color: red;">{{ form.errors.otp }}</p>
-        {% endif %}
+        <!-- {% for msg in messages %}
+        <p style="color: red;">{{ msg }}</p>
+        {% endfor %} -->
     </form>
 </div>
+</center>
 {% endblock %}

@@ -1,0 +1,17 @@
+<!-- templates/setup_two_factor.html -->
+{% extends "admin/base_site.html" %}
+{% block content %}
+<center>
+{% if qr_code %}
+    <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" width="300" height="300">
+    <p>Scan this QR code with your authenticator app.</p>
+    <a href="/adminotp/">Validate OTP</a>
+{% else %}
+    <p>Two-factor authentication is not set up.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Set up 2FA</button>
+    </form>
+{% endif %}
+</center>
+{% endblock %}

@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 
-from .models import User, Post
+from .models import User, Post, UserSuggestionTopic
 
 
 class UserSerializer(ModelSerializer):
@@ -51,5 +51,31 @@ class PostSerializer(ModelSerializer):
         existing_tags = instance.tags
         new_tags_list = list(set(tags_list + existing_tags))
         instance.tags = new_tags_list
+        instance.save()
+        return instance
+
+
+class UserSuggestionTopicSerializer(ModelSerializer):
+    topic = serializers.ListField(
+        child = serializers.CharField()
+    )
+
+    class Meta:
+        model = UserSuggestionTopic
+        fields = ['topic']
+
+    def create(self, validated_data):
+        user = self.context.get('user')
+        topics = validated_data.pop('topic', [])
+        user_suggestion = UserSuggestionTopic.objects.create(user=user)
+        user_suggestion.topic = topics
+        user_suggestion.save()
+        return user_suggestion.save()
+        
+    def update(self, instance, validated_data):
+        topics = validated_data.pop('topic', [])
+        existing_topics = instance.topic
+        updated_topics = list(set(existing_topics + topics))
+        instance.topic = updated_topics
         instance.save()
         return instance

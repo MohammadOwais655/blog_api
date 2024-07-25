@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .views.admin_view import admin_site
 
-from .models import User, Post, BlacklistedToken, OTP
+from .models import User, Post, BlacklistedToken
 
 # Register your models here.
 
@@ -17,5 +17,4 @@ class PostAdmin(admin.ModelAdmin):
 admin_site.register(User, UserAdmin)
 admin_site.register(Post, PostAdmin)
 admin_site.register(BlacklistedToken)
-admin_site.register(OTP)
 

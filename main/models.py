@@ -30,6 +30,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_two_factor_auth = models.BooleanField(default=False)
+    secret_key = models.CharField(max_length=32, default=None)
     joining_date = models.DateTimeField(auto_now_add=True)
 
     objects = UserManager()
@@ -67,14 +69,24 @@ class Post(models.Model):
         db_table = 'posts'
 
     
-class OTP(models.Model):
+# class OTP(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     otp = models.CharField(max_length=6)
+#     is_used = models.BooleanField(default=False)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     class Meta:
+#         db_table = 'otps'
+
+#     def is_valid(self):
+#         return self.created_at >= timezone.now() - timezone.timedelta(minutes=5)
+    
+
+class UserSuggestionTopic(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    otp = models.CharField(max_length=6)
-    is_used = models.BooleanField(default=False)
+    topic = models.JSONField(default=list)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'otps'
+        db_table = 'user_suggestion_topic'
 
-    def is_valid(self):
-        return self.created_at >= timezone.now() - timezone.timedelta(minutes=5)

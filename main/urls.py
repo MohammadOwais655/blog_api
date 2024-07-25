@@ -15,5 +15,6 @@ urlpatterns = [
     path('delete-post/<int:post_id>', post_view.post_delete_view, name='post_delete'),
     path('single-post/<int:post_id>', post_view.singel_post_view, name='post_single'),
     path('post/tags', post_view.tags_post_view, name='post_tags'),
-    path('suggestions', post_view.suggestions, name='suggestions'),
+    path('suggestions-topics', post_view.suggestions_tags_topics, name='suggestions+topics'),
+    path('suggest-content', post_view.suggest_content),
 ]
